@@ -1,0 +1,20 @@
+{
+  "name": "officegist-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "migrate": "node scripts/migrate.js",
+    "migrate:demo": "node scripts/migrate.js --demo",
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "pg": "^8.12.0",
+    "zod": "^3.23.8"
+  }
+}

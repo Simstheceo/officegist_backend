@@ -1,0 +1,37 @@
+# Change `app` to a name nobody else has taken. It becomes https://<app>.fly.dev
+app = "officegist-api"
+# Use the same region as your Managed Postgres cluster (pick it when you run `fly mpg create`).
+primary_region = "lhr"
+
+[build]
+
+[env]
+  NODE_ENV = "production"
+  PORT = "4000"
+  # Number of proxies in front of the API. See the deploy notes before changing.
+  TRUST_PROXY = "1"
+  AUTO_APPROVE_LOW = "false"
+  MIN_SALARY_REPORTS = "5"
+
+# Applies new files in db/ before each release goes live. If a migration fails, the deploy stops and the old version keeps running.
+[deploy]
+  release_command = "node /app/scripts/migrate.js"
+
+[http_service]
+  internal_port = 4000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1   # keeps one machine warm so the first visitor does not wait for a cold start
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/healthz"
+
+[[vm]]
+  memory = "512mb"   # password hashing uses ~32MB per login; 256mb is tight under load
+  cpu_kind = "shared"
+  cpus = 1
